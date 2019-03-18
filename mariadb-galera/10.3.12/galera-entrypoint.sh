@@ -172,4 +172,14 @@ fi
 ln -sf $wsrep_cnf /etc/my.cnf.d/
 ln -sf $mysql_cnf /etc/my.cnf.d/
 echo "=================================== MySQL Deamon Runing Infomation ==================================="
-/docker-entrypoint.sh "$@"
+# Support instance graceful exit
+graceful_exit(){
+    su - mysql -s /bin/bash -c "/bin/kill -SIGTERM `/bin/pgrep -n mysqld`"
+    while /bin/pgrep -n mysqld;do
+        sleep 1
+    done
+}
+
+trap "graceful_exit" SIGTERM
+/docker-entrypoint.sh "$@" &
+wait $!
