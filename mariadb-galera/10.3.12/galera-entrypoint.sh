@@ -174,8 +174,8 @@ ln -sf $mysql_cnf /etc/my.cnf.d/
 echo "=================================== MySQL Deamon Runing Infomation ==================================="
 # Support instance graceful exit
 graceful_exit(){
-    su - mysql -s /bin/bash -c "/bin/kill -SIGTERM `/bin/pgrep -n mysqld`"
-    while /bin/pgrep -n mysqld;do
+    kill -SIGTERM `pgrep -n mysqld`
+    while pgrep -n mysqld;do
         sleep 1
     done
 }
