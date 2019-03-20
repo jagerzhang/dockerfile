@@ -1,16 +1,18 @@
-FROM idocker.oa.com/library/mariadb:10.3.12
-MAINTAINER jagerzhang<jagerzhang@tencent.com>
+FROM jagerzhang/mariadb:10.3.12
+MAINTAINER jagerzhang<im@zhang.ge>
 
 ENV my_port=3307 \
     base_dir=/data/mariadb-galera
 
 RUN sed -i '/^#!\/bin\/sh/a\
+    \\# Support to limit transfer speed in rsync mode\n\ 
     if [[ ! -z $rsync_transfer_limit ]];\
     then\n\
         RSYNC_TRANSFER_LIMIT="--bwlimit $rsync_transfer_limit"\n\
     else\n\
         RSYNC_TRANSFER_LIMIT=""\n\
     fi\n' /usr/bin/wsrep_sst_rsync \
+    \\# Set the count of transfer to 1 when rsync_transfer_limit is defined\n\ 
     && sed -i '/find . -maxdepth/i\
     if [[ ! -z $rsync_transfer_limit ]];\
     then\n\
