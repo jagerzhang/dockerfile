@@ -48,7 +48,7 @@ docker run --net=host \
     -v /data/mariadb-galera:/data/mariadb-galera \
    jagerzhang/mariadb-galera
 ```
-执行后，可以执行 docker logs -f demo-3310 查看启动日志，也可以执行 tail -f /data/mariadb-galera/logs/error.log 查看运行日，启动成功后，可以执行如下命令查看集群状态：
+执行后，可以执行 docker logs -f demo-3310 查看启动日志，也可以执行 tail -f /data/mariadb-galera/logs/error.log 查看运行日，启动成功后，可以执行如下命令查看集群状态：
 
 `mysql -h192.168.1.100 -udemo -p123456 -e "show status like '%wsrep%'"`
 
