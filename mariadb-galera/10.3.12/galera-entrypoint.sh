@@ -32,9 +32,17 @@ galera_init()
     gcache_size=${gcache_size:-5G}
     wsrep_provider_options="gcache.size=${gcache_size}; gmcast.listen_addr=tcp://${local_addr}:${gmcast_list_port}; ist.recv_addr=${local_addr}:${ist_recv_port};"
     wsrep_sst_receive_address=${local_addr}:${sst_receive_port}
+    if [[ ! -z $transfer_limit ]];then
+        xtra_transfer_limit="${transfer_limit}k"
+    else
+        xtra_transfer_limit=""
+    fi
 
 cat <<- EOF > $wsrep_cnf
 # Galera Cluster Auto Generated Config
+[sst]
+rlimit=${xtra_transfer_limit}
+
 [galera]
 wsrep_on="${wsrep_on:-on}"
 wsrep_provider="${wsrep_provider:-/usr/lib64/galera/libgalera_smm.so}"

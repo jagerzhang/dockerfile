@@ -4,20 +4,19 @@ MAINTAINER jagerzhang<im@zhang.ge>
 ENV my_port=3307 \
     base_dir=/data/mariadb-galera
 
-RUN sed -i '/^#!\/bin\/sh/a\
-    \\# Support to limit transfer speed in rsync mode\n\ 
-    if [[ ! -z $rsync_transfer_limit ]];\
+RUN sed -i '/wsrep_sst_common$/a\
+    rlimit=$(parse_cnf sst rlimit ""|grep -o "[0-9]*"|head -1)\n\
+    if [[ ! -z $rlimit ]];\n\
     then\n\
-        RSYNC_TRANSFER_LIMIT="--bwlimit $rsync_transfer_limit"\n\
+        RSYNC_TRANSFER_LIMIT="--bwlimit $rlimit"\n\
     else\n\
         RSYNC_TRANSFER_LIMIT=""\n\
-    fi\n' /usr/bin/wsrep_sst_rsync \
-    \\# Set the count of transfer to 1 when rsync_transfer_limit is defined\n\ 
+    fi' /usr/bin/wsrep_sst_rsync \
     && sed -i '/find . -maxdepth/i\
-    if [[ ! -z $rsync_transfer_limit ]];\
+    if [[ ! -z $RSYNC_TRANSFER_LIMIT ]];\n\
     then\n\
         count=1\n\
-    fi\n' /usr/bin/wsrep_sst_rsync \
+    fi' /usr/bin/wsrep_sst_rsync \
     && sed -i 's/--quiet/--quiet $RSYNC_TRANSFER_LIMIT/g' /usr/bin/wsrep_sst_rsync
 
 COPY etc/auto-join-cluster.sh /
