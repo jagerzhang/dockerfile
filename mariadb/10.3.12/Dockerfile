@@ -3,13 +3,13 @@ MAINTAINER jagerzhang<jagerzhang@tencent.com>
 
 COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
 
-RUN  groupadd -r mysql \
+RUN groupadd -r mysql \
     && useradd -r -g mysql mysql \
     && rpm --import https://mirrors.ustc.edu.cn/mariadb/yum/RPM-GPG-KEY-MariaDB \
     && yum clean all \
     && yum makecache \
     && yum install -y epel-release \
-    && yum -y install socat pv \
+    && yum install -y socat pv \
        MariaDB-server-10.3.12-1.el7.centos.x86_64 \
        MariaDB-client-10.3.12-1.el7.centos.x86_64 \
        MariaDB-backup-10.3.12-1.el7.centos.x86_64 \
