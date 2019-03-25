@@ -1,4 +1,4 @@
-Mariadb galera Cluster 集群镜像（下面简称MGC）。
+Mariadb Galera Cluster 集群镜像（下面简称MGC），仅支持Host网络模式。
 ### 相比官方镜像的改进点：
 - 一键式下发，无人值守创建MGC集群；
 - 支持MySQL（包含galera）全局任意参数设置；
@@ -38,7 +38,7 @@ Galera参数使用wsrep_${参数名} 形式，比如：wsrep_sst_method=off
 ```
 docker run --net=host \
     --name=demo \
-    -e cluster_name = demo \
+    -e cluster_name=demo \
     -e my_port=3310 \
     -e node1=192.168.1.100 \
     -e node2=192.168.1.101 \
