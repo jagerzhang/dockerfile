@@ -36,7 +36,8 @@ Galera参数使用wsrep_${参数名} 形式，比如：wsrep_sst_method=off
 #### 快速启动demo
 在192.168.1.100、192.168.1.101、192.168.1.102三个节点上分别执行如下命令即可（不要求先后，会自动组建集群）：
 ```
-docker run --net=host \
+docker run -d \
+    --net=host \
     --name=demo \
     -e cluster_name=demo \
     -e my_port=3310 \
