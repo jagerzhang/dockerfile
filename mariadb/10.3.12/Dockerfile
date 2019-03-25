@@ -8,7 +8,11 @@ RUN  groupadd -r mysql \
     && rpm --import https://mirrors.ustc.edu.cn/mariadb/yum/RPM-GPG-KEY-MariaDB \
     && yum clean all \
     && yum makecache \
-    && yum -y install vim lrzsz telnet iproute net-tools socat MariaDB-server-10.3.12-1.el7.centos.x86_64 MariaDB-client-10.3.12-1.el7.centos.x86_64 MariaDB-backup-10.3.12-1.el7.centos.x86_64 \
+    && yum install -y epel-release \
+    && yum -y install socat pv \
+       MariaDB-server-10.3.12-1.el7.centos.x86_64 \
+       MariaDB-client-10.3.12-1.el7.centos.x86_64 \
+       MariaDB-backup-10.3.12-1.el7.centos.x86_64 \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /var/lib/mysql/* \
