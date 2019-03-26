@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
 # get ipaddress
- get ipaddress
 get_ip_of_interface()
 {
    local iface=${1:-eth1}
