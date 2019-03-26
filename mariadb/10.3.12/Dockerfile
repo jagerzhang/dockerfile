@@ -9,7 +9,7 @@ RUN groupadd -r mysql \
     && yum clean all \
     && yum makecache \
     && yum install -y epel-release \
-    && yum install -y socat pv \
+    && yum install -y telnet socat pv \
        MariaDB-server-10.3.12-1.el7.centos.x86_64 \
        MariaDB-client-10.3.12-1.el7.centos.x86_64 \
        MariaDB-backup-10.3.12-1.el7.centos.x86_64 \
