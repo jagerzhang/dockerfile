@@ -1,17 +1,4 @@
 #!/bin/bash
-getip()
-{
-    bridges="br0 eth1 eth0"
-    for i in $bridges; do
-        if [ `ifconfig | egrep "^${i}" | wc -l` -ne 0 ]; then
-            echo `ip addr show ${i} | grep brd | grep inet | awk '{print $2}' | cut -d / -f1`
-            break
-        fi  
-    done
-}
-
-local_addr=$(getip)
-
 check_node_status()
 {
     check_node=$1
