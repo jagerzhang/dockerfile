@@ -1,17 +1,26 @@
 #!/usr/bin/env bash
 set -eo pipefail
 # get ipaddress
-getip()
+ get ipaddress
+get_ip_of_interface()
 {
-    bridges="br0 eth1 eth0 lo"
-    for i in $bridges; do
-        if [ `ifconfig | egrep "^${i}" | wc -l` -ne 0 ]; then
-            echo `ip addr show ${i} | grep brd | grep inet | awk '{print $2}' | cut -d / -f1`
+   local iface=${1:-eth1}
+   /sbin/ip addr | grep "$iface$" 2>/dev/null | \ 
+   awk -F '[/ ]+' '/inet / {print $3}'
+   return ${PIPESTATUS[1]}
+}
+
+get_ipaddr()
+{
+    interface=${interface:-"br0 eth1 eth0"}
+    for i in $interface; do
+        if get_ip_of_interface $i;then
             break
         fi  
     done
 }
-# 初始化galera配置
+
+# init galera configuration
 galera_init()
 {
     # port configuration
@@ -84,7 +93,7 @@ auto_init()
     done
 }
 
-export local_addr=$(getip)
+export local_addr=$(get_ipaddr)
 export my_port=${my_port:-3307}
 export cluster_mode=${cluster_mode:-1}
 export my_server_id=${my_server_id-$(echo $local_addr | awk -F '.' '{print $3$4}')}
