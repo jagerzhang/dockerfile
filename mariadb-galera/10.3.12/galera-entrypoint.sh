@@ -4,7 +4,7 @@ set -eo pipefail
 get_ip_of_interface()
 {
    local iface=${1:-eth1}
-   /sbin/ip addr | grep "$iface$" 2>/dev/null | \ 
+   /sbin/ip addr | grep -e "${iface}$" 2>/dev/null | \
    awk -F '[/ ]+' '/inet / {print $3}'
    return ${PIPESTATUS[1]}
 }
