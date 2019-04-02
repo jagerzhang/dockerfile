@@ -105,7 +105,7 @@ export my_log_error=$logs_dir/error.log
 export my_slow_query_log_file=$logs_dir/slow.log
 export my_pid_file=$lock_dir/mysql.pid
 mkdir -p {$my_datadir,$lock_dir,$logs_dir,$conf_dir,$base_dir/initdb.d}
-chown -R mysql:mysql {$my_datadir,$lock_dir,$logs_dir,$conf_dir,$base_dir/initdb.d}
+chown -R mysql:mysql {$base_dir,$my_datadir,$lock_dir,$logs_dir,$conf_dir,$base_dir/initdb.d}
 export mysql_sst_password=${mysql_sst_password:-"${cluster_name}@${my_port}"}
 # get memory_limit set , get MemTotal if  memory_limit is not set.
 memory_total=$(awk '/MemTotal:/ {printf("%d", $2/1024)}' /proc/meminfo)
@@ -187,7 +187,7 @@ else
 fi
 ln -sf $wsrep_cnf /etc/my.cnf.d/
 ln -sf $mysql_cnf /etc/my.cnf.d/
-echo "=================================== MySQL Deamon Runing Infomation ==================================="
+echo "=================================== MySQL Daemon Runing Infomation ==================================="
 # Support instance graceful exit
 graceful_exit(){
     kill -SIGTERM `pgrep -n mysqld`
