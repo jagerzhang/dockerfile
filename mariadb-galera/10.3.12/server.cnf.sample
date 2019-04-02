@@ -1,5 +1,6 @@
 [client]
 port = 3307
+default_character_set = utf8
 socket = /var/lib/mysql/mysql.sock
 
 [mysqld_safe]
@@ -10,10 +11,11 @@ server_id=2
 bind_address = 0.0.0.0
 port         = 3307
 skip_name_resolve=1
+character_set_server = utf8
 skip_external_locking
 datadir=/data/mariadb-galera
-log_error=/data/mariadb-galera/error.log
-pid_file=/data/mariadb-galera/mysql.pid
+tmpdir=/data/mariadb-galera
+pid_file=/data/mariadb-galera/mysqld.pid
 
 ################ log configuration ################
 log_bin=mysql-bin
@@ -24,10 +26,13 @@ log_bin_trust_function_creators=on
 relay_log_recovery = 1
 slow_query_log=1
 long_query_time=3
-log_queries_not_using_indexes=off
+log_queries_not_using_indexes=0
+log_error=/data/mariadb-galera/error.log
 slow_query_log_file=/data/mariadb-galera/slow.log
+binlog_row_image='MINIMAL'
 
 ################ innodb configuration ################
+default_storage_engine = InnoDB
 sync_binlog=0
 innodb_flush_log_at_trx_commit = 0
 innodb_file_per_table = 1
@@ -39,27 +44,29 @@ innodb_locks_unsafe_for_binlog=1
 innodb_strict_mode=0
 innodb_log_file_size=16M
 innodb_log_buffer_size = 16M
-#innodb_read_io_threads = 8
-#innodb_write_io_threads = 8
+innodb_flush_method='O_DIRECT'
+innodb_read_io_threads = 8
+innodb_write_io_threads = 8
 
 ################ sql_Mode configuration ################
 sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 slave_exec_mode=IDEMPOTENT
 
 ################ common configuration ################
-query_cache_type=OFF
+query_cache_type=0
 query_cache_size=0
 query_cache_limit=0
-max_allowed_packet = 512M
-max_connections=1024
-tmp_table_size=128M
-max_heap_table_size=128M
-table_open_cache = 2000
-key_buffer_size = 8M
-read_buffer_size = 1M
-sort_buffer_size = 1M
-read_rnd_buffer_size = 4M
-net_buffer_length = 512K
-group_concat_max_len = 4096000
-interactive_timeout = 28800
-wait_timeout = 28800
+#max_allowed_packet = 512M
+#max_connections=1024
+#max_connect_errors=999999999
+#tmp_table_size=128M
+#max_heap_table_size=128M
+#table_open_cache = 2000
+#key_buffer_size = 8M
+#read_buffer_size = 1M
+#sort_buffer_size = 1M
+#read_rnd_buffer_size = 4M
+#net_buffer_length = 512K
+#group_concat_max_len = 4096000
+#interactive_timeout = 28800
+#wait_timeout = 28800
