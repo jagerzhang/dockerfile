@@ -33,7 +33,6 @@ galera_init()
             join_address=$join_address:$gmcast_list_port
         fi
     fi
-    wsrep_cluster_name="${cluster_name:-cluster_name}"
     wsrep_cluster_address=gcomm://${join_address}
     wsrep_node_address=${wsrep_node_address:-$local_addr}
     wsrep_sst_auth=${wsrep_sst_auth:-"sst:${mysql_sst_password}"}
@@ -45,6 +44,7 @@ galera_init()
     else
         xtra_transfer_limit=""
     fi
+    
 
 cat <<- EOF > $wsrep_cnf
 # Galera Cluster Auto Generated Config
@@ -56,7 +56,7 @@ wsrep_on="${wsrep_on:-on}"
 wsrep_provider="${wsrep_provider:-/usr/lib64/galera/libgalera_smm.so}"
 wsrep_provider_options="${wsrep_provider_options}"
 wsrep_cluster_address="${wsrep_cluster_address}"
-wsrep_cluster_name="${cluster_name}"
+wsrep_cluster_name="${cluster_name:-cluster_name}"
 wsrep_node_name="${wsrep_node_name:-$local_addr}"
 wsrep_sst_auth="${wsrep_sst_auth}"
 wsrep_sst_method="${wsrep_sst_method:-mariabackup}"
@@ -101,12 +101,14 @@ export my_datadir=${my_datadir:-$base_dir/data}
 export conf_dir=${conf_dir:-$base_dir/conf}
 export lock_dir=${lock_dir:-$base_dir/lock}
 export logs_dir=${logs_dir:-$base_dir/logs}
+export tmp_dir=${tmp_dir:-$base_dir/logs/tmpdir}
 export my_log_error=$logs_dir/error.log
 export my_slow_query_log_file=$logs_dir/slow.log
-export my_pid_file=$lock_dir/mysql.pid
-mkdir -p {$my_datadir,$lock_dir,$logs_dir,$conf_dir,$base_dir/initdb.d}
-chown -R mysql:mysql {$base_dir,$my_datadir,$lock_dir,$logs_dir,$conf_dir,$base_dir/initdb.d}
+export my_pid_file=$lock_dir/mysqld.pid
+mkdir -p {$my_datadir,$lock_dir,$logs_dir,$conf_dir,$tmp_dir,$base_dir/initdb.d}
+chown -R mysql:mysql {$base_dir,$my_datadir,$lock_dir,$logs_dir,$conf_dir,$tmp_dir,$base_dir/initdb.d}
 export mysql_sst_password=${mysql_sst_password:-"${cluster_name}@${my_port}"}
+
 # get memory_limit set , get MemTotal if  memory_limit is not set.
 memory_total=$(awk '/MemTotal:/ {printf("%d", $2/1024)}' /proc/meminfo)
 if [[ -f /sys/fs/cgroup/memory/memory.stat ]];then
@@ -168,12 +170,13 @@ export my_report_host=${my_report_host:-$local_addr:$my_port}
 # Initialization
 echo "==================================== Initialization Infomation ======================================="
 if [[ $cluster_mode -eq 1 ]];then
+    export cluster_name=${wsrep_cluster_name:-$cluster_name}
     echo "cluster_name: $cluster_name"
     echo "current_node: $current_node:$my_port"
     echo "cluster_members: $current_node:$my_port,$(echo ${member_list[@]}|sed -r "s/\s+/:$my_port,/g"):$my_port"
     echo
 else
-    export wsrep_on="off"
+    export wsrep_on="${wsrep_on:-off}"
 fi
 
 if [[ ! -f $lock_dir/global.lock ]];then
@@ -188,6 +191,7 @@ fi
 ln -sf $wsrep_cnf /etc/my.cnf.d/
 ln -sf $mysql_cnf /etc/my.cnf.d/
 echo "=================================== MySQL Daemon Runing Infomation ==================================="
+
 # Support instance graceful exit
 graceful_exit(){
     kill -SIGTERM `pgrep -n mysqld`
