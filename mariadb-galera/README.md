@@ -54,5 +54,4 @@ docker run -d \
 
 `mysql -h192.168.1.100 -P3310 -udemo -p123456 -e "show status like '%wsrep%'"`
 
-#### 其他说明
-待续...
+#### 更多说明请查看详细介绍：https://zhang.ge/5150.html
