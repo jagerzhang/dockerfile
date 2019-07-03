@@ -21,6 +21,8 @@ RUN groupadd -r mysql \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 ENV TERM=xterm \
+    COLUMNS=256 \
+    LINES=70 \
     LANG=zh_CN.UTF-8 \
     LC_ALL=zh_CN.UTF-8 \
     base_dir=/data/mariadb-galera
