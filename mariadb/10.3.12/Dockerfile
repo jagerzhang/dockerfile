@@ -20,9 +20,7 @@ RUN groupadd -r mysql \
     && echo 'LC_CTYPE="en_US.UTF-8"' > /etc/sysconfig/i18n \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-ENV TERM=xterm \
-    COLUMNS=256 \
-    LINES=70 \
+ENV TERM=linux \
     LANG=zh_CN.UTF-8 \
     LC_ALL=zh_CN.UTF-8 \
     base_dir=/data/mariadb-galera
