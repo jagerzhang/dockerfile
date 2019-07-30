@@ -44,7 +44,6 @@ galera_init()
     else
         xtra_transfer_limit=""
     fi
-    
 
 cat <<- EOF > $wsrep_cnf
 # Galera Cluster Auto Generated Config
@@ -120,6 +119,31 @@ else
     export memory_limit=$memory_total
 fi
 
+# innodb_buffer_pool_size
+export my_innodb_buffer_pool_size="$(echo $memory_limit | awk '{printf("%d", $0*0.5)}')M"
+
+# innodb_log_file_size
+innodb_log_file_size=`echo $my_innodb_buffer_pool_size | awk '{printf("%d", $0*0.2)}'`
+if [ $innodb_log_file_size -lt 64 ]; then
+    innodb_log_file_size="64"    
+elif [ $innodb_log_file_size -gt 2048 ]; then
+    innodb_log_file_size="2048"
+fi
+export my_innodb_log_file_size=${innodb_log_file_size}M
+
+# max_connections
+max_connections=`echo $my_innodb_buffer_pool_size | awk '{printf("%d", $0/10)}'`
+if [ $max_connections -lt 500 ]; then
+    max_connections="500"
+elif [ $max_connections -gt 16000 ]; then
+    max_connections="16000"
+fi
+
+export my_max_connections=${my_max_connections:-$max_connections}
+
+# report_host
+export my_report_host=${my_report_host:-$local_addr:$my_port}
+
 # reserved custom configuration 
 if [[ -f $conf_dir/custom.cfg ]];then
     source $conf_dir/custom.cfg
@@ -145,27 +169,6 @@ mysql_cnf=$conf_dir/server.cnf
 if [[ ! -f $mysql_cnf ]]; then
     cp -a /etc/my.cnf.d/server.cnf.sample $mysql_cnf
 fi
-
-# innodb_buffer_pool_size
-export my_innodb_buffer_pool_size="$(echo $memory_limit | awk '{printf("%d", $0*0.7)}')M"
-# innodb_log_file_size
-innodb_log_file_size=`echo $my_innodb_buffer_pool_size | awk '{printf("%d", $0*0.2)}'`
-if [ $innodb_log_file_size -lt 64 ]; then
-    innodb_log_file_size="64"    
-elif [ $innodb_log_file_size -gt 2048 ]; then
-    innodb_log_file_size="2048"
-fi
-export my_innodb_log_file_size=${innodb_log_file_size}M
-# max_connections
-max_connections=`echo $my_innodb_buffer_pool_size | awk '{printf("%d", $0/10)}'`
-if [ $max_connections -lt 500 ]; then
-    max_connections="500"
-elif [ $max_connections -gt 16000 ]; then
-    max_connections="16000"
-fi
-export my_max_connections=${my_max_connections:-$max_connections}
-# report_host
-export my_report_host=${my_report_host:-$local_addr:$my_port}
 
 # Initialization
 echo "==================================== Initialization Infomation ======================================="
