@@ -39,7 +39,7 @@ Galera参数使用wsrep_${参数名} 形式，比如：wsrep_sst_method=rsync
 ```
 docker run -d \
     --net=host \
-    --name=demo \
+    --name=demo-3310 \
     -e cluster_name=demo \
     -e my_port=3310 \
     -e node1=192.168.1.100 \
