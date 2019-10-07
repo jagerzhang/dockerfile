@@ -9,7 +9,6 @@ if [ "$1" = 'haproxy' ]; then
         echo echo "[$(date '+%F %H:%M:%S')] ENV \${VIP} is not SET, Plz check!"
         exit 1
     fi
-    mkdir -p /usr/local/haproxy/logs/
     bash /opt/update_cfg.sh
     ln -sf /usr/local/haproxy/etc/${VIP}.cfg /etc/haproxy.cfg
     haproxy -W -c -f /etc/haproxy.cfg || (
