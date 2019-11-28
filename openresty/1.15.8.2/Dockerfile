@@ -8,6 +8,7 @@ LABEL maintainer="Evan Wies <evan@neomantra.net>"
 ARG RESTY_VERSION="1.15.8.2"
 ARG RESTY_OPENSSL_VERSION="1.1.0k"
 ARG RESTY_PCRE_VERSION="8.43"
+ARG RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION="0.6.4"
 ARG RESTY_J="1"
 ARG RESTY_CONFIG_OPTIONS="\
     --with-file-aio \
@@ -38,7 +39,7 @@ ARG RESTY_CONFIG_OPTIONS="\
     --with-stream \
     --with-stream_ssl_module \
     --with-threads \
-    --add-module=/tmp/ngx_http_substitutions_filter_module-0.6.4"
+    --add-module=/tmp/ngx_http_substitutions_filter_module-${RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION}"
 
 ARG RESTY_CONFIG_OPTIONS_MORE=""
 ARG RESTY_ADD_PACKAGE_BUILDDEPS=""
@@ -92,8 +93,8 @@ RUN apk add --no-cache --virtual .build-deps \
     && tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz \
     && curl -fSL https://openresty.org/download/openresty-${RESTY_VERSION}.tar.gz -o openresty-${RESTY_VERSION}.tar.gz \
     && tar xzf openresty-${RESTY_VERSION}.tar.gz \
-    && curl -fSL https://github.com/yaoweibin/ngx_http_substitutions_filter_module/archive/v0.6.4.tar.gz -o ngx_http_substitutions_filter_module.tar.gz \
-    && tar xzf ngx_http_substitutions_filter_module.tar.gz \
+    && curl -fSL https://github.com/yaoweibin/ngx_http_substitutions_filter_module/archive/v${RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION}.tar.gz -o ngx_http_substitutions_filter_module-v${RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION}.tar.gz \
+    && tar xzf ngx_http_substitutions_filter_module-v${RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION}.tar.gz \
     && cd /tmp/openresty-${RESTY_VERSION} \
     && ./configure -j${RESTY_J} ${_RESTY_CONFIG_DEPS} ${RESTY_CONFIG_OPTIONS} ${RESTY_CONFIG_OPTIONS_MORE} \
     && make -j${RESTY_J} \
@@ -105,6 +106,7 @@ RUN apk add --no-cache --virtual .build-deps \
         openssl-${RESTY_OPENSSL_VERSION}.tar.gz \
         openresty-${RESTY_VERSION}.tar.gz openresty-${RESTY_VERSION} \
         pcre-${RESTY_PCRE_VERSION}.tar.gz pcre-${RESTY_PCRE_VERSION} \
+	ngx_http_substitutions_filter_module-v${RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION}.tar.gz ngx_http_substitutions_filter_module-${RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION} \
     && apk del .build-deps \
     && ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log \
     && ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log
