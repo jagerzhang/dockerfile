@@ -70,15 +70,24 @@ check_cfg()
 {
     old_md5=$(test -f ${current_cfg} && md5sum ${current_cfg} | awk '{print $1}' 2>/dev/null )
     new_md5=$(md5sum ${temp_cfg}|awk '{print $1}')
+    # check md5
     if [ "$old_md5" = "$new_md5" ];then
-        report_log "The configuration file ${VIP}.cfg is the same, no need update."
+        report_log "WARN: The Configuration file ${VIP}.cfg is the same, no need update."
         return 2
     fi
+    # check bind ip
+    for ip in `awk -F ':|[ ]+' '/[ ]+bind[ ]+[^0.0.0.0]/ {print $3}' ${temp_cfg} | sort | uniq`;do
+        if ! ifconfig | grep -wq $ip;then
+            report_log "ERROR: Bind-IP: $ip is not exist on the sever,Plz Check in ${temp_cfg}!"
+            return 1
+        fi
+    done
+    # check configration
     if haproxy -c -W -f ${temp_cfg} >/dev/null ;then
         report_log "Configuration file ${temp_cfg} is valid."
         return 0
     else
-        report_log "Configuration file ${temp_cfg} is invalid."
+        report_log "ERROR: Configuration file ${temp_cfg} is invalid."
         return 1
     fi
 }
