@@ -1,0 +1,20 @@
+pid pids/nginx.pid;
+error_log ${{PROXY_ERROR_LOG}} ${{LOG_LEVEL}};
+
+# injected nginx_main_* directives
+daemon ${{NGINX_DAEMON}};
+worker_rlimit_nofile ${{NGINX_MAIN_WORKER_RLIMIT_NOFILE}};
+worker_processes ${{NGINX_WORKER_PROCESSES}};
+
+events {
+    # injected nginx_events_* directives
+    worker_connections ${{NGINX_MAIN_WORKER_RLIMIT_NOFILE}};
+    multi_accept on;
+}
+
+http {
+    # setting by custom env 
+    include 'nginx-custom.conf';
+    # setting by kong
+    include 'nginx-kong.conf';
+}
