@@ -29,6 +29,7 @@ Mariadb Galera Cluster 集群镜像（下面简称MGC），仅支持Host网络�
 - cluster_mode   是否使用集群模式
 - join_address   指定已存在的成员IP
 - interface      指定绑定的网卡，用于集群自动探测时确认容器身份（nodeX），缺省优先级为：br0 > eth1 > eth0，若不符合要求请务必指定实际网卡名
+- local_addr     指定本地IP，用于兼容本地网卡上绑定了VIP的特殊情况
 
 #### 支持任意mysql、galera参数
 MySQLl参数使用my_${参数名} 形式，比如：my_tmp_talbe_size=512M
