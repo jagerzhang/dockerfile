@@ -91,7 +91,7 @@ auto_init()
     done
 }
 
-export local_addr=$(get_ipaddr)
+export local_addr=${local_addr:-$(get_ipaddr)}
 export my_port=${my_port:-3307}
 export cluster_mode=${cluster_mode:-1}
 export my_server_id=${my_server_id-$(echo $local_addr | awk -F '.' '{print $3$4}')}
