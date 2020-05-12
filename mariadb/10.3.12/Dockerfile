@@ -1,5 +1,5 @@
 FROM centos:7.5.1804
-MAINTAINER jagerzhang<jagerzhang@tencent.com>
+MAINTAINER jager<im@zhang.ge>
 
 COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
 
