@@ -1,7 +1,7 @@
 FROM centos:7.5.1804
 LABEL maintainer=jager<im@zhang.ge> description="MairaDB Base Image"
 
-ARG version=10.3.12
+ARG version=10.5.6
 
 COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
 
