@@ -1,4 +1,4 @@
-FROM jagerzhang/mariadb:latest
+FROM jagerzhang/mariadb:10.5
 LABEL maintainer=jager<im@zhang.ge> description="MairaDB Galera Cluster Image" articles=https://zhang.ge/5150.html
 
 ENV my_port=3307 \

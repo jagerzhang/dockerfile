@@ -1,7 +1,5 @@
-FROM centos:7.5.1804
+FROM centos:7
 LABEL maintainer=jager<im@zhang.ge> description="MairaDB Base Image"
-
-ARG version=10.4.15
 
 COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
 
@@ -12,9 +10,7 @@ RUN groupadd -r mysql \
     && yum makecache \
     && yum install -y epel-release \
     && yum install -y telnet socat pv \
-       MariaDB-server-${version}-1.el7.centos.x86_64 \
-       MariaDB-client-${version}-1.el7.centos.x86_64 \
-       MariaDB-backup-${version}-1.el7.centos.x86_64 \
+       MariaDB-server MariaDB-client MariaDB-backup \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /var/lib/mysql/* \
@@ -31,3 +27,4 @@ COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["mysqld_safe"]
+
