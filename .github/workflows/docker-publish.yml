@@ -33,11 +33,6 @@ on:
         required: true
         type: boolean
         default: false
-      CHECKOUT_REF:
-        description: "The branch, tag or SHA to checkout. e.g. master,dev"
-        required: true
-        type: string
-        default: 'master'
 
   workflow_dispatch:
     inputs:
@@ -66,11 +61,7 @@ on:
         required: true
         type: boolean
         default: false
-      CHECKOUT_REF:
-        description: "The branch, tag or SHA to checkout. e.g. master,dev"
-        required: true
-        type: string
-        default: 'master'
+
 env:
   # Use docker.io for Docker Hub if empty
   # REGISTRY: ghcr.io
@@ -92,8 +83,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.CHECKOUT_REF }}
         
       - name: Check context
         id: get-context
@@ -145,7 +134,7 @@ jobs:
             # set latest tag
             type=raw,value=latest,enable=${{ inputs.LATEST_VERSION }}
             # branch tag
-            type=raw,value=${{ inputs.CHECKOUT_REF }}-${{ inputs.APP_VERSION }},enable=${{ inputs.CHECKOUT_REF != 'master' }}
+            type=raw,value=${{ format('refs/heads/{0}', 'master') }}-${{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
             # APP_VERSION
             type=raw,value=${{ inputs.APP_VERSION }}
 
