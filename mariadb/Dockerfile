@@ -5,7 +5,7 @@ LABEL maintainer=jager<im@zhang.ge> description="MairaDB Base Image"
 # RUN chmod +x  /tmp/init_mariadb_repo.sh && /tmp/init_mariadb_repo.sh
 ARG VERSION=10.6
 RUN VERSION=${VERSION}
-RUN  cat > tmp.txt << EOF
+RUN  cat > /etc/yum.repos.d/mariadb.repo << EOF
 # MariaDB ${VERSION} CentOS repository list - created $(date -u) 
 # http://downloads.mariadb.org/mariadb/repositories/ 
 name = MariaDB 
