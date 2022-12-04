@@ -153,7 +153,7 @@ jobs:
         id: build-and-load
         uses: docker/build-push-action@v3
         with:
-          context: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
+          context: ${{ steps.get-context.outputs.context_path }}
           load: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:test
 
@@ -184,7 +184,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v3
         with:
-          context: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
+          context: ${{ steps.get-context.outputs.context_path }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           platforms: ${{ inputs.BUILD_PLATFORMS }}
