@@ -5,14 +5,14 @@ LABEL maintainer=jager<im@zhang.ge> description="MairaDB Base Image"
 # RUN chmod +x  /tmp/init_mariadb_repo.sh && /tmp/init_mariadb_repo.sh
 ARG VERSION=10.6
 RUN VERSION=${VERSION}
-RUN echo -e "\n\
-# MariaDB ${VERSION} CentOS repository list - created $(date -u) \n\
-# http://downloads.mariadb.org/mariadb/repositories/ \n\
-name = MariaDB \n\
-baseurl = http://yum.mariadb.org/${VERSION}/centos7-amd64 \n\
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB \n\
-gpgcheck=1 \n\
-" >> /etc/yum.repos.d/mariadb.repo
+RUN  cat > tmp.txt << EOF
+# MariaDB ${VERSION} CentOS repository list - created $(date -u) 
+# http://downloads.mariadb.org/mariadb/repositories/ 
+name = MariaDB 
+baseurl = http://yum.mariadb.org/${VERSION}/centos7-amd64 
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB 
+gpgcheck=1 
+EOF
 
 RUN cat /etc/yum.repos.d/mariadb.repo
 
@@ -29,9 +29,9 @@ RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
 RUN echo 'LC_CTYPE="en_US.UTF-8"' > /etc/sysconfig/i18n
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-ENV TERM=linux \
-    LANG=zh_CN.UTF-8 \
-    LC_ALL=zh_CN.UTF-8 \
+ENV TERM=linux 
+    LANG=zh_CN.UTF-8 
+    LC_ALL=zh_CN.UTF-8 
     base_dir=/data/mariadb-galera
 
 COPY docker-entrypoint.sh /
