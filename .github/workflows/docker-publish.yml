@@ -182,6 +182,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
              REGISTRY_USERNAME=${{ secrets.REGISTRY_USERNAME }}
+             VERSION=${{ inputs.APP_VERSION }}
           
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
