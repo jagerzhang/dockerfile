@@ -5,13 +5,13 @@ LABEL maintainer=jager<im@zhang.ge> description="MairaDB Base Image"
 # RUN chmod +x  /tmp/init_mariadb_repo.sh && /tmp/init_mariadb_repo.sh
 ARG VERSION=10.6
 RUN VERSION=${VERSION}
-RUN echo -e "
+RUN echo -e "\n\
 # MariaDB ${VERSION} CentOS repository list - created $(date -u) \n\
 # http://downloads.mariadb.org/mariadb/repositories/ \n\
 name = MariaDB \n\
 baseurl = http://yum.mariadb.org/${VERSION}/centos7-amd64 \n\
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB \n\
-gpgcheck=1
+gpgcheck=1 \n\
 " >> /etc/yum.repos.d/mariadb.repo
 
 RUN cat /etc/yum.repos.d/mariadb.repo
