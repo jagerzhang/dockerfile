@@ -37,7 +37,12 @@ on:
         required: true
         type: boolean
         default: false
-        
+      SIGN_IMAGE:
+        description: "Sign the published Docker image"
+        required: true
+        type: boolean
+        default: false
+
   workflow_dispatch:
     inputs:
       APP_NAME:
@@ -57,6 +62,11 @@ on:
         default: 'linux/amd64'
       LATEST_VERSION:
         description: "version will be latest"
+        required: true
+        type: boolean
+        default: false
+      SIGN_IMAGE:
+        description: "Sign the published Docker image"
         required: true
         type: boolean
         default: false
@@ -95,7 +105,7 @@ jobs:
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && input.SIGN_IMAGE
         uses: sigstore/cosign-installer@main
         with:
           cosign-release: "v1.13.1"
@@ -180,7 +190,7 @@ jobs:
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name != 'pull_request' && input.SIGN_IMAGE }}
         env:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
