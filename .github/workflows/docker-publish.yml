@@ -156,7 +156,7 @@ jobs:
           context: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-          platforms: "linux/amd64,linux/arm64/v8,linux/386"
+          platforms: "linux/amd64,linux/arm64/v8"
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache,mode=max
           labels: ${{ steps.meta.outputs.labels }}
