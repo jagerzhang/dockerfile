@@ -71,7 +71,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+        
+      - name: Check file exist
+        run: |
+            if [ ! -d ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }} ];then 
+              echo "path not exist: ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }}"
+              exit 1
+            fi
+               
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
