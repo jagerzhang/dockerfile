@@ -134,7 +134,7 @@ jobs:
             # set latest tag
             type=raw,value=latest,enable=${{ inputs.LATEST_VERSION }}
             # branch tag
-            type=raw,value=${{ format('refs/heads/{0}', 'master') }}-${{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
+            type=raw,value=${{ github.ref }}-${{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
             # APP_VERSION
             type=raw,value=${{ inputs.APP_VERSION }}
 
