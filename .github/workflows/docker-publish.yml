@@ -56,7 +56,6 @@ env:
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
   # IMAGE_NAME: ${{ github.repository }}
-  APP_VERSION: '10.6'
 
 jobs:
   mariadb-galera:
@@ -74,8 +73,8 @@ jobs:
         
       - name: Check file exist
         run: |
-            if [ ! -d ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }} ];then 
-              echo "path not exist: ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }}"
+            if [ ! -d "${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}" ];then 
+              echo "path not exist: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}"
               exit 1
             fi
                
@@ -115,15 +114,15 @@ jobs:
             # set latest tag
             type=raw,value=latest,enable=${{ inputs.APP_VERSION == inputs.LATEST_VERSION }}
             # branch tag
-            type=raw,value={{ format('refs/heads/{0}', 'master') }}-{{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
-            # APP_VERSION+
-            type=raw,value={{ inputs.APP_VERSION }}
+            type=raw,value=${{ format('refs/heads/{0}', 'master') }}-${{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
+            # APP_VERSION
+            type=raw,value=${{ inputs.APP_VERSION }}
 
       - name: Build and load to Docker
         id: build-and-load
         uses: docker/build-push-action@v3
         with:
-          context: ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }}
+          context: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
           load: true
           tags: ${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:test
 
@@ -154,7 +153,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v3
         with:
-          context: ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }}
+          context: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
