@@ -8,6 +8,7 @@ RUN groupadd -r mysql \
     && rpm --import http://yum.mariadb.org/RPM-GPG-KEY-MariaDB \
     && yum clean all \
     && yum makecache \
+    && yum install -y which \
     && yum install -y epel-release \
     && yum install -y telnet socat pv \
        MariaDB-server MariaDB-client MariaDB-backup \
