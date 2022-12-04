@@ -27,6 +27,11 @@ on:
         required: true
         type: string
         default: '10.6'
+      BUILD_PLATFORMS:
+        description: "platforms build e.g. linux/amd64,linux/arm64,linux/386,linux/arm/v7"
+        required: true
+        type: string
+        default: 'linux/amd64'
       LATEST_VERSION:
         description: "version will be latest"
         required: true
@@ -45,6 +50,11 @@ on:
         required: true
         type: string
         default: '10.6'
+      BUILD_PLATFORMS:
+        description: "platforms build e.g. linux/amd64,linux/arm64,linux/386,linux/arm/v7"
+        required: true
+        type: string
+        default: 'linux/amd64'
       LATEST_VERSION:
         description: "version will be latest"
         required: true
@@ -157,7 +167,7 @@ jobs:
           context: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-          platforms: "linux/amd64"
+          platforms: ${{ inputs.BUILD_PLATFORMS }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache,mode=max
           labels: ${{ steps.meta.outputs.labels }}
