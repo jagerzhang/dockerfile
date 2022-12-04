@@ -28,10 +28,10 @@ on:
         type: string
         default: '10.6'
       LATEST_VERSION:
-        description: "Which version will be latest e.g. 10.6"
+        description: "version will be latest"
         required: true
-        type: string
-        default: '10.6'
+        type: boolean
+        default: false
         
   workflow_dispatch:
     inputs:
@@ -46,10 +46,10 @@ on:
         type: string
         default: '10.6'
       LATEST_VERSION:
-        description: "Which version will be latest e.g. 10.6"
+        description: "version will be latest"
         required: true
-        type: string
-        default: '10.6'
+        type: boolean
+        default: false
 env:
   # Use docker.io for Docker Hub if empty
   # REGISTRY: ghcr.io
@@ -112,7 +112,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}
           tags: |
             # set latest tag
-            type=raw,value=latest,enable=${{ inputs.APP_VERSION == inputs.LATEST_VERSION }}
+            type=raw,value=latest,enable=${{ inputs.LATEST_VERSION }}
             # branch tag
             type=raw,value=${{ format('refs/heads/{0}', 'master') }}-${{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
             # APP_VERSION
@@ -156,7 +156,7 @@ jobs:
           context: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-          platforms: "linux/amd64,linux/arm64,linux/386,linux/arm/v7"
+          platforms: "linux/amd64,linux/arm64/v8,linux/386"
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache,mode=max
           labels: ${{ steps.meta.outputs.labels }}
