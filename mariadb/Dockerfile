@@ -11,6 +11,8 @@ RUN echo -e "# MariaDB ${VERSION} CentOS repository list - created $(date -u) \n
     baseurl = http://yum.mariadb.org/${VERSION}/centos7-amd64 \n\
     gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB \n\
     gpgcheck=1" >> /etc/yum.repos.d/mariadb.repo
+    
+RUN cat /etc/yum.repos.d/mariadb.repo
 
 RUN groupadd -r mysql
 RUN useradd -r -g mysql mysql
