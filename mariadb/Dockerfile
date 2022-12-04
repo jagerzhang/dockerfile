@@ -15,7 +15,6 @@ RUN echo -e "# MariaDB ${VERSION} CentOS repository list - created $(date -u) \n
 RUN groupadd -r mysql
 RUN useradd -r -g mysql mysql
 RUN rpm --import http://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-RUN yum clean all
 RUN yum makecache
 RUN yum install -y epel-release
 RUN yum install -y which
