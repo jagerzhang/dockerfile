@@ -117,6 +117,8 @@ jobs:
             type=raw,value=${{ format('refs/heads/{0}', 'master') }}-${{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
             # APP_VERSION
             type=raw,value=${{ inputs.APP_VERSION }}
+          labels: |
+            org.opencontainers.image.description=${{ inputs.APP_VERSION }}
 
       - name: Build and load to Docker
         id: build-and-load
