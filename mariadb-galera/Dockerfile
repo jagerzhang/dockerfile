@@ -21,11 +21,14 @@ RUN sed -i '/wsrep_sst_common$/a\
     fi' /usr/bin/wsrep_sst_rsync \
     && sed -i 's/--quiet/--quiet $RSYNC_TRANSFER_LIMIT/g' /usr/bin/wsrep_sst_rsync
 
-COPY auto-join-cluster.sh /
 COPY server.cnf.sample /etc/my.cnf.d/
 COPY wsrep.cnf.sample /etc/my.cnf.d/
+
+COPY auto-join-cluster.sh /
 COPY docker-entrypoint.sh /
 COPY galera-entrypoint.sh /
+
+RUN chmod +x /auto-join-cluster.sh /docker-entrypoint.sh /galera-entrypoint.sh
 ENTRYPOINT ["/galera-entrypoint.sh"]
 
 CMD ["mysqld_safe"]

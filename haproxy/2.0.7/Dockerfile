@@ -6,5 +6,5 @@ RUN apt-get update \
 
 COPY update_cfg.sh /opt/
 COPY docker-entrypoint.sh /
-
+RUN chmod +x /docker-entrypoint.sh
 CMD ["haproxy","-f","/etc/haproxy.cfg"]

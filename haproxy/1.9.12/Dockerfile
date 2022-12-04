@@ -12,5 +12,5 @@ COPY update_cfg.sh /opt/
 COPY docker-entrypoint.sh /
 COPY haproxy_exporter /opt/
 COPY Dockerfile /
-
+RUN chmod +x /docker-entrypoint.sh
 CMD ["haproxy","-f","/etc/haproxy.cfg"]

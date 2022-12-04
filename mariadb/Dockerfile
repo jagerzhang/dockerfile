@@ -29,7 +29,7 @@ ENV TERM=linux \
     base_dir=/data/mariadb-galera
 
 COPY docker-entrypoint.sh /
-RUN chmod +x docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["mysqld_safe"]
