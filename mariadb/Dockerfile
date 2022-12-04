@@ -12,21 +12,19 @@ RUN echo -e "# MariaDB ${VERSION} CentOS repository list - created $(date -u) \n
     gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB \n\
     gpgcheck=1" >> /etc/yum.repos.d/mariadb.repo
 
-RUN groupadd -r mysql \
-    && useradd -r -g mysql mysql \
-    && rpm --import http://yum.mariadb.org/RPM-GPG-KEY-MariaDB \
-    && yum clean all \
-    && yum makecache \
-    && yum install -y which \
-    && yum install -y epel-release \
-    && yum install -y telnet socat pv \
-       MariaDB-server MariaDB-client MariaDB-backup \
-    && yum clean all \
-    && rm -rf /var/cache/yum \
-    && rm -rf /var/lib/mysql/* \
-    && localedef -c -f UTF-8 -i zh_CN zh_CN.utf8 \
-    && echo 'LC_CTYPE="en_US.UTF-8"' > /etc/sysconfig/i18n \
-    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN groupadd -r mysql
+RUN useradd -r -g mysql mysql
+RUN rpm --import http://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+RUN yum clean all
+RUN yum makecache
+RUN yum install -y epel-release
+RUN yum install -y which
+RUN yum install -y telnet socat pv MariaDB-server MariaDB-client MariaDB-backup
+RUN yum clean all
+RUN rm -rf /var/cache/yum && rm -rf /var/lib/mysql/*
+RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
+RUN echo 'LC_CTYPE="en_US.UTF-8"' > /etc/sysconfig/i18n
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 ENV TERM=linux \
     LANG=zh_CN.UTF-8 \
