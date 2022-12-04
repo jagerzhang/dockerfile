@@ -1,13 +1,23 @@
 FROM centos:7
 LABEL maintainer=jager<im@zhang.ge> description="MairaDB Base Image"
 
-COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
+# COPY init_mariadb_repo.sh /tmp/init_mariadb_repo.sh
+# RUN chmod +x  /tmp/init_mariadb_repo.sh && /tmp/init_mariadb_repo.sh
+ARG VERSION=10.6
+RUN VERSION=${VERSION}
+RUN echo -e "# MariaDB ${VERSION} CentOS repository list - created $(date -u) \n\
+    # http://downloads.mariadb.org/mariadb/repositories/ \n\
+    name = MariaDB \n\
+    baseurl = http://yum.mariadb.org/${VERSION}/centos7-amd64 \n\
+    gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB \n\
+    gpgcheck=1" >> /etc/yum.repos.d/mariadb.repo
 
 RUN groupadd -r mysql \
     && useradd -r -g mysql mysql \
     && rpm --import http://yum.mariadb.org/RPM-GPG-KEY-MariaDB \
     && yum clean all \
     && yum makecache \
+    && yum install -y which \
     && yum install -y epel-release \
     && yum install -y telnet socat pv \
        MariaDB-server MariaDB-client MariaDB-backup \

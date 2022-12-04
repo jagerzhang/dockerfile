@@ -6,15 +6,6 @@ name: docker-build-test-publish
 # documentation.
 
 on:
-  # schedule:
-  #   - cron: '44 1 * * *'
-  push:
-    branches: ["dev", "path-*"]
-    # Publish semver tags as releases.
-    # tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: ["dev", "path-*"]
-    
   workflow_call:
     inputs:
       APP_NAME:
@@ -42,6 +33,11 @@ on:
         required: true
         type: boolean
         default: false
+      CHECKOUT_REF:
+        description: "The branch, tag or SHA to checkout. e.g. master,dev"
+        required: true
+        type: string
+        default: 'master'
 
   workflow_dispatch:
     inputs:
@@ -70,6 +66,11 @@ on:
         required: true
         type: boolean
         default: false
+      CHECKOUT_REF:
+        description: "The branch, tag or SHA to checkout. e.g. master,dev"
+        required: true
+        type: string
+        default: 'master'
 env:
   # Use docker.io for Docker Hub if empty
   # REGISTRY: ghcr.io
@@ -91,14 +92,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.CHECKOUT_REF }}
         
-      - name: Check file exist
+      - name: Check context
+        id: get-context
         run: |
-            if [ ! -d "${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}" ];then 
-              echo "path not exist: ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}"
+            if [ -d "${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}" ] && [ -n "$(ls ${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }} | grep -i Dockerfile)" ]; then
+              context_path=${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
+            elif [ -n "$(ls ${{ inputs.APP_NAME }} | grep -i Dockerfile)" ];then
+              context_path=${{ inputs.APP_NAME }}
+            else
+              echo "Dockerfile not exist: ${{ inputs.APP_NAME }} - ${{ inputs.APP_VERSION }}"
               exit 1
             fi
-               
+            echo "Use context path: ${context_path}"
+            echo "context_path=${context_path}" >> $GITHUB_OUTPUT
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -135,7 +145,7 @@ jobs:
             # set latest tag
             type=raw,value=latest,enable=${{ inputs.LATEST_VERSION }}
             # branch tag
-            type=raw,value=${{ format('refs/heads/{0}', 'master') }}-${{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
+            type=raw,value=${{ inputs.CHECKOUT_REF }}-${{ inputs.APP_VERSION }},enable=${{ inputs.CHECKOUT_REF != 'master' }}
             # APP_VERSION
             type=raw,value=${{ inputs.APP_VERSION }}
 

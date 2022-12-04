@@ -1,5 +1,6 @@
-ARG REGISTRY_USERNAME jagerzhang
-FROM ${REGISTRY_USERNAME}/mariadb:10.5
+ARG REGISTRY_USERNAME=jagerzhang
+ARG VERSION=10.6
+FROM ${REGISTRY_USERNAME}/mariadb:${VERSION}
 LABEL maintainer=jager<im@zhang.ge> description="MairaDB Galera Cluster Image" articles=https://zhang.ge/5150.html
 
 ENV my_port=3307 \
