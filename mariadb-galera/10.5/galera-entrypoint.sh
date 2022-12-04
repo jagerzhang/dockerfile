@@ -52,7 +52,7 @@ rlimit=${xtra_transfer_limit}
 
 [galera]
 wsrep_on="${wsrep_on:-on}"
-wsrep_provider="${wsrep_provider:-/usr/lib64/galera/libgalera_smm.so}"
+wsrep_provider="${wsrep_provider:-/usr/lib64/galera-4/libgalera_smm.so}"
 wsrep_provider_options="${wsrep_provider_options}"
 wsrep_cluster_address="${wsrep_cluster_address}"
 wsrep_cluster_name="${cluster_name:-cluster_name}"

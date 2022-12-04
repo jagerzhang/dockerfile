@@ -160,16 +160,6 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache,mode=max
           labels: ${{ steps.meta.outputs.labels }}
-#           labels: |
-#             org.opencontainers.image.title=${{ inputs.APP_NAME }}
-#             org.opencontainers.image.version=${{ inputs.APP_VERSION }}
-#             org.opencontainers.image.url=https://hub.docker.com/r/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}
-#             org.opencontainers.image.source=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.source'] }}/${{ inputs.APP_NAME }}/${{ inputs.APP_VERSION }}
-#             org.opencontainers.image.created=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-#             org.opencontainers.image.revision=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
-            
-          
-            
 
           
       # Sign the resulting Docker image digest except on PRs.
