@@ -32,6 +32,24 @@ on:
         required: true
         type: string
         default: '10.6'
+        
+  workflow_dispatch:
+    inputs:
+      APP_NAME:
+        description: "App name e.g. mariadb-galera"
+        required: true
+        type: string
+        default: 'mariadb-galera'
+      APP_VERSION:
+        description: "Version e.g. 10.6"
+        required: true
+        type: string
+        default: '10.6'
+      LATEST_VERSION:
+        description: "Which version will be latest e.g. 10.6"
+        required: true
+        type: string
+        default: '10.6'
 env:
   # Use docker.io for Docker Hub if empty
   # REGISTRY: ghcr.io
