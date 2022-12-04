@@ -1,4 +1,5 @@
-FROM zctmdc/mariadb:10.6
+ARG REGISTRY_USERNAME jagerzhang
+FROM ${REGISTRY_USERNAME}/mariadb:10.6
 LABEL maintainer=jager<im@zhang.ge> description="MairaDB Galera Cluster Image" articles=https://zhang.ge/5150.html
 
 ENV my_port=3307 \

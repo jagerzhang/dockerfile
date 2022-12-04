@@ -171,7 +171,8 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache,mode=max
           labels: ${{ steps.meta.outputs.labels }}
-
+          build-args: |
+             REGISTRY_USERNAME=${{ secrets.REGISTRY_USERNAME }}
           
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
