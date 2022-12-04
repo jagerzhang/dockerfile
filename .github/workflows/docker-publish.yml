@@ -1,0 +1,151 @@
+name: mariadb-galera-build-publish
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+on:
+  # schedule:
+  #   - cron: '44 1 * * *'
+  push:
+    branches: ["dev", "path-*"]
+    # Publish semver tags as releases.
+    # tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: ["dev", "path-*"]
+    
+  workflow_call:
+    inputs:
+      APP_NAME:
+        description: "App name e.g. mariadb-galera"
+        required: true
+        type: string
+        default: 'mariadb-galera'
+      APP_VERSION:
+        description: "Version e.g. 10.6"
+        required: true
+        type: string
+        default: '10.6'
+      LATEST_VERSION:
+        description: "Which version will be latest e.g. 10.6"
+        required: true
+        type: string
+        default: '10.6'
+env:
+  # Use docker.io for Docker Hub if empty
+  # REGISTRY: ghcr.io
+  REGISTRY: docker.io
+  # github.repository as <account>/<repo>
+  # IMAGE_NAME: ${{ github.repository }}
+  APP_VERSION: '10.6'
+
+jobs:
+  mariadb-galera:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      # Install the cosign tool except on PR
+      # https://github.com/sigstore/cosign-installer
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@main
+        with:
+          cosign-release: "v1.13.1"
+
+      # Workaround: https://github.com/docker/build-push-action/issues/461
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}
+          tags: |
+            # set latest tag
+            type=raw,value=latest,enable=${{ inputs.APP_VERSION == inputs.LATEST_VERSION }}
+            # branch tag
+            type=raw,value={{ format('refs/heads/{0}', 'master') }}-{{ inputs.APP_VERSION }},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
+            # APP_VERSION+
+            type=raw,value={{ inputs.APP_VERSION }}
+
+      - name: Build and load to Docker
+        id: build-and-load
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }}
+          load: true
+          tags: ${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:test
+
+      - name: Test docker
+        if: inputs.APP_NAME == 'mariadb-galera'
+        id: docker-test
+        run: |
+          echo "test start"
+          
+          echo test not ready
+          exit 0
+                   
+          docker network create --driver bridge --subnet=172.31.0.0/16 inotify-rsync-server-test
+          REGISTRY_USERNAME=${{ secrets.REGISTRY_USERNAME }}
+          APP_NAME=${{ inputs.APP_NAME }}
+          # REGISTRY_USERNAME=zctmdc
+          # APP_NAME=mariadb-galera
+          
+ 
+          
+          
+          echo "test pass"
+
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        id: build-and-push
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ inputs.APP_NAME }}/{{ inputs.APP_VERSION }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: "linux/amd64,linux/arm64,linux/386,linux/arm/v7"
+          cache-from: type=registry,ref=${{ inputs.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ inputs.REGISTRY }}/${{ secrets.REGISTRY_USERNAME }}/${{ inputs.APP_NAME }}:buildcache,mode=max
+
+      # Sign the resulting Docker image digest except on PRs.
+      # This will only write to the public Rekor transparency log when the Docker
+      # repository is public to avoid leaking data.  If you would like to publish
+      # transparency data even for private images, pass --force to cosign below.
+      # https://github.com/sigstore/cosign
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        # This step uses the identity token to provision an ephemeral certificate
+        # against the sigstore community Fulcio instance.
+        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
