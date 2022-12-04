@@ -22,7 +22,7 @@ on:
         description: "platforms build e.g. linux/amd64,linux/arm64,linux/386,linux/arm/v7"
         required: true
         type: string
-        default: 'linux/amd64'
+        default: 'linux/amd64,linux/arm64'
       LATEST_VERSION:
         description: "version will be latest"
         required: true
@@ -50,7 +50,7 @@ on:
         description: "platforms build e.g. linux/amd64,linux/arm64,linux/386,linux/arm/v7"
         required: true
         type: string
-        default: 'linux/amd64'
+        default: 'linux/amd64,linux/arm64'
       LATEST_VERSION:
         description: "This version will be tag: latest"
         required: true
