@@ -5,7 +5,7 @@ COPY mariadb.repo /etc/yum.repos.d/mariadb.repo
 
 RUN groupadd -r mysql \
     && useradd -r -g mysql mysql \
-    && rpm --import https://mirrors.ustc.edu.cn/mariadb/yum/RPM-GPG-KEY-MariaDB \
+    && rpm --import http://yum.mariadb.org/RPM-GPG-KEY-MariaDB \
     && yum clean all \
     && yum makecache \
     && yum install -y epel-release \
