@@ -23,9 +23,9 @@ RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
 RUN echo 'LC_CTYPE="en_US.UTF-8"' > /etc/sysconfig/i18n
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-ENV TERM=linux 
-    LANG=zh_CN.UTF-8 
-    LC_ALL=zh_CN.UTF-8 
+ENV TERM=linux \
+    LANG=zh_CN.UTF-8 \
+    LC_ALL=zh_CN.UTF-8 \
     base_dir=/data/mariadb-galera
 
 COPY docker-entrypoint.sh /
