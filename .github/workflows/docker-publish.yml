@@ -9,12 +9,12 @@ on:
   workflow_call:
     inputs:
       APP_NAME:
-        description: "App name e.g. mariadb-galera"
+        description: "App name e.g. mariadb-galera haproxy"
         required: true
         type: string
         default: 'mariadb-galera'
       APP_VERSION:
-        description: "Version e.g. 10.6"
+        description: "Version e.g. 10.6 2.1.0"
         required: true
         type: string
         default: '10.6'
@@ -37,12 +37,12 @@ on:
   workflow_dispatch:
     inputs:
       APP_NAME:
-        description: "App name e.g. mariadb-galera"
+        description: "App name e.g. mariadb-galera haproxy"
         required: true
         type: string
         default: 'mariadb-galera'
       APP_VERSION:
-        description: "Version e.g. 10.6"
+        description: "Version e.g. 10.6 2.1.0"
         required: true
         type: string
         default: '10.6'
@@ -52,7 +52,7 @@ on:
         type: string
         default: 'linux/amd64'
       LATEST_VERSION:
-        description: "version will be latest"
+        description: "This version will be tag: latest"
         required: true
         type: boolean
         default: false
