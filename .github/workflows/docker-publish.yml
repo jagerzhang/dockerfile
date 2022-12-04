@@ -58,7 +58,8 @@ env:
   # IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  mariadb-galera:
+  build-test-publish:
+    name: ${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
