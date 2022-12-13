@@ -5,7 +5,7 @@ FROM alpine:latest
 LABEL maintainer="Evan Wies <evan@neomantra.net>"
 
 # Docker Build Arguments
-ARG RESTY_VERSION="1.15.8.2"
+ARG VERSION="1.15.8.2"
 ARG RESTY_OPENSSL_VERSION="1.1.0k"
 ARG RESTY_PCRE_VERSION="8.43"
 ARG RESTY_SUBSTITUTIONS_FILTER_MODULE_VERSION="0.6.4"
